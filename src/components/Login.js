@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 function Login({ handleLogin }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+
   function handleSubmitForm(evt) {
     evt.preventDefault();
     handleLogin({
@@ -13,6 +14,7 @@ function Login({ handleLogin }) {
     setEmail("");
     setPassword("");
   }
+  
   return (
     <section className="auth-form">
       <form className="auth-form__form" onSubmit={handleSubmitForm}>
