@@ -88,7 +88,10 @@ function App() {
         setLoggedIn(true);
         history.push("/");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setIsSucceed(false);
+        setIsInfoTooltipOpened(true);
+      });
   }
 
   function handleLogout() {

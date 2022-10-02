@@ -11,8 +11,6 @@ function Login({ handleLogin }) {
       email: email,
       password: password,
     });
-    setEmail("");
-    setPassword("");
   }
   
   return (
