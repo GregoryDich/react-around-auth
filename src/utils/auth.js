@@ -1,4 +1,4 @@
-export const BASE_URL = "https://register.nomoreparties.co";
+export const BASE_URL = "http://localhost:3001";
 function checkResponce(res) {
   if (res.ok) {
     return res.json();

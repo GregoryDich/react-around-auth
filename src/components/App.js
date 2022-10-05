@@ -35,7 +35,8 @@ function App() {
       api
         .getUserInfo()
         .then((res) => {
-          setCurrentUser(res);
+          setCurrentUser(res.user);
+          setCurrentUserEmail(res.user.email);
         })
         .catch((err) => console.log(err));
   }, [loggedIn]);
@@ -44,30 +45,28 @@ function App() {
     loggedIn &&
       api
         .getInitialCards()
-        .then((cards) => setCards(cards))
+        .then((cards) => {
+          setCards(cards.data)
+        })
         .catch((err) => console.log(err));
   }, [loggedIn]);
 
   React.useEffect(() => {
-    checkToken();
-  }, []);
-
-  function checkToken() {
     const token = localStorage.getItem("jwt");
     token &&
       verifyToken(token)
         .then((res) => {
-          setCurrentUserEmail(res.data.email);
+          setCurrentUserEmail(res.user.email);
           setLoggedIn(true);
           history.push("/");
         })
         .catch((err) => console.log(err));
-  }
+  }, [history]);
 
   function handleRegister({ email, password }) {
     signUp({ email, password })
       .then((res) => {
-        if (res.status === 201) {
+        if (res.status === 200) {
           setIsSucceed(true);
           history.push("/signin");
         } else {
@@ -97,17 +96,18 @@ function App() {
   function handleLogout() {
     setLoggedIn(false);
     setCurrentUser({});
+    setCurrentUserEmail('');
     localStorage.removeItem("jwt");
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((user) => user._id === currentUser._id);
+    const isLiked = card.likes.some((id) => id === currentUser._id);
     api
       .changeLikeCardStatus(isLiked, card)
       .then((res) => {
         setCards((state) =>
           state.map((currentCard) =>
-            currentCard._id === card._id ? res : currentCard
+            currentCard._id === card._id ? res.data : currentCard
           )
         );
       })
@@ -129,7 +129,8 @@ function App() {
     api
       .editProfile(data)
       .then((res) => {
-        setCurrentUser(res);
+        console.log(res.user);
+        setCurrentUser(res.user);
         closeAllPopups();
       })
       .catch((err) => console.log(err));
@@ -139,7 +140,7 @@ function App() {
     api
       .editAvatar(data)
       .then((res) => {
-        setCurrentUser(res);
+        setCurrentUser(res.user);
         closeAllPopups();
       })
       .catch((err) => console.log(err));
@@ -149,7 +150,7 @@ function App() {
     api
       .addCard(data)
       .then((res) => {
-        setCards([res, ...cards]);
+        setCards([res.data, ...cards]);
         closeAllPopups();
       })
       .catch((err) => console.log(err));
